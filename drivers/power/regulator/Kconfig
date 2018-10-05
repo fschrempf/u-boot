@@ -43,6 +43,16 @@ config REGULATOR_AS3722
 	  but does not yet support change voltages. Currently this must be
 	  done using direct register writes to the PMIC.
 
+config DM_REGULATOR_DA9063
+	bool "Enable Driver Model for REGULATOR DA9063"
+	depends on DM_REGULATOR && DM_PMIC_DA9063
+	help
+	  This config enables implementation of driver-model regulator uclass
+	  features for REGULATOR DA9063.
+	  The driver implements get/set api for value, enable and mode for all
+	  regulators. It also implements the get/set api for current for the
+	  buck regulators.
+
 config DM_REGULATOR_PFUZE100
 	bool "Enable Driver Model for REGULATOR PFUZE100"
 	depends on DM_REGULATOR && DM_PMIC_PFUZE100
