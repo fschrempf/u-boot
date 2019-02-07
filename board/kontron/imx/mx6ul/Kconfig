@@ -1,0 +1,15 @@
+if TARGET_KONTRON_N631X
+
+config SYS_BOARD
+	string
+	default "imx/mx6ul"
+
+config SYS_VENDOR
+	string
+	default "kontron"
+
+config SYS_CONFIG_NAME
+	string
+	default "kontron_n631x"
+
+endif

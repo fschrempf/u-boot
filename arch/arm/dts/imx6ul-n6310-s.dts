@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: GPL-2.0 OR MIT
+/*
+ * Copyright (C) 2017 exceet electronics GmbH
+ * Copyright (C) 2018 Kontron Electronics GmbH
+ */
+
+/dts-v1/;
+
+#include "imx6ul.dtsi"
+#include "imx6ul-n6310-som.dtsi"
+#include "imx6ul-n6x1x-s.dtsi"
+
+/ {
+	model = "Kontron Electronics N6310 S Board";
+	compatible = "kontron,n6310-s", "fsl,imx6ul";
+};
