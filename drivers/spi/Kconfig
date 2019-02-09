@@ -1,7 +1,4 @@
-menuconfig SPI
-	bool "SPI Support"
-
-if SPI
+menu "SPI Support"
 
 config DM_SPI
 	bool "Enable Driver Model for SPI drivers"
@@ -328,6 +325,14 @@ config ZYNQMP_GQSPI
 
 endif # if DM_SPI
 
+config SPI
+	bool "Legacy SPI support"
+	help
+	  Enable the legacy SPI support. This will include legacy SPI
+	  interface code for non-dm SPI drivers.
+
+if SPI
+
 config SOFT_SPI
 	bool "Soft SPI driver"
 	depends on DM_SPI || (DEPRECATED && !DM_SPI)
@@ -414,4 +419,6 @@ config OMAP3_SPI
 	  (McSPI). This driver be used to access SPI chips on platforms
 	  embedding this OMAP3 McSPI IP core.
 
-endif # menu "SPI Support"
+endif # if SPI
+
+endmenu # menu "SPI Support"
