@@ -145,12 +145,6 @@
 
 #define CONFIG_IMX_THERMAL
 
-#ifdef CONFIG_FSL_QSPI
-#define CONFIG_SYS_FSL_QSPI_AHB
-#define FSL_QSPI_FLASH_SIZE		SZ_32M
-#define FSL_QSPI_FLASH_NUM		2
-#endif
-
 #define CONFIG_ENV_OFFSET		(8 * SZ_64K)
 #define CONFIG_ENV_SIZE			SZ_8K
 

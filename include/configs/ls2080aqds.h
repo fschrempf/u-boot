@@ -299,8 +299,6 @@ unsigned long get_board_ddr_clk(void);
 
 #ifdef CONFIG_FSL_QSPI
 #define CONFIG_SPI_FLASH_SPANSION
-#define FSL_QSPI_FLASH_SIZE		(1 << 26) /* 64MB */
-#define FSL_QSPI_FLASH_NUM		4
 #endif
 /*
  * Verify QSPI when boot from NAND, QIXIS brdcfg9 need configure.

@@ -44,11 +44,7 @@
 #define CONFIG_SF_DATAFLASH
 
 #define CONFIG_FSL_QSPI
-#define QSPI0_AMBA_BASE		0x40000000
 #define CONFIG_SPI_FLASH_SPANSION
-
-#define FSL_QSPI_FLASH_SIZE		SZ_64M
-#define FSL_QSPI_FLASH_NUM		2
 
 /*
  * Environment
