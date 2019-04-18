@@ -39,12 +39,8 @@
 /*SPI device */
 #if defined(CONFIG_QSPI_BOOT) || defined(CONFIG_TFABOOT)
 #define CONFIG_SYS_FMAN_FW_ADDR		0x400d0000
-#define CONFIG_SPI_FLASH_SPANSION
 #define CONFIG_FSL_SPI_INTERFACE
 #define CONFIG_SF_DATAFLASH
-
-#define CONFIG_FSL_QSPI
-#define CONFIG_SPI_FLASH_SPANSION
 
 /*
  * Environment
