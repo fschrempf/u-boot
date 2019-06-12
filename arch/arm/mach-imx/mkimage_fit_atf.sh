@@ -8,7 +8,7 @@
 
 [ -z "$BL31" ] && BL31="bl31.bin"
 [ -z "$TEE_LOAD_ADDR" ] && TEE_LOAD_ADDR="0xfe000000"
-[ -z "$ATF_LOAD_ADDR" ] && ATF_LOAD_ADDR="0x00910000"
+[ -z "$ATF_LOAD_ADDR" ] && ATF_LOAD_ADDR="0x00920000"
 [ -z "$BL33_LOAD_ADDR" ] && BL33_LOAD_ADDR="0x40200000"
 
 if [ ! -f $BL31 ]; then
@@ -55,6 +55,7 @@ cat << __HEADER_EOF
 	images {
 		uboot@1 {
 			description = "U-Boot (64-bit)";
+			os = "u-boot";
 			data = /incbin/("$BL33");
 			type = "standalone";
 			arch = "arm64";
@@ -63,6 +64,7 @@ cat << __HEADER_EOF
 		};
 		atf@1 {
 			description = "ARM Trusted Firmware";
+			os = "arm-trusted-firmware";
 			data = /incbin/("$BL31");
 			type = "firmware";
 			arch = "arm64";
@@ -114,8 +116,8 @@ if [ -f $BL32 ]; then
 cat << __CONF_SECTION_EOF
 		config@$cnt {
 			description = "$(basename $dtname .dtb)";
-			firmware = "uboot@1";
-			loadables = "atf@1", "tee@1";
+			firmware = "atf@1";
+			loadables = "uboot@1", "tee@1";
 			fdt = "fdt@$cnt";
 		};
 __CONF_SECTION_EOF
@@ -123,8 +125,8 @@ else
 cat << __CONF_SECTION1_EOF
 		config@$cnt {
 			description = "$(basename $dtname .dtb)";
-			firmware = "uboot@1";
-			loadables = "atf@1";
+			firmware = "atf@1";
+			loadables = "uboot@1";
 			fdt = "fdt@$cnt";
 		};
 __CONF_SECTION1_EOF
