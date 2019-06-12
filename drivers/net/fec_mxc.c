@@ -125,7 +125,7 @@ static int fec_mdio_read(struct ethernet_regs *eth, uint8_t phyaddr,
 
 static int fec_get_clk_rate(void *udev, int idx)
 {
-#if IS_ENABLED(CONFIG_IMX8)
+#if IS_ENABLED(CONFIG_IMX8) || IS_ENABLED(CONFIG_IMX8M)
 	struct fec_priv *fec;
 	struct udevice *dev;
 	int ret;
@@ -1323,7 +1323,7 @@ static int fecmxc_probe(struct udevice *dev)
 	uint32_t start;
 	int ret;
 
-	if (IS_ENABLED(CONFIG_IMX8)) {
+	if (IS_ENABLED(CONFIG_IMX8) || IS_ENABLED(CONFIG_IMX8M)) {
 		ret = clk_get_by_name(dev, "ipg", &priv->ipg_clk);
 		if (ret < 0) {
 			debug("Can't get FEC ipg clk: %d\n", ret);
