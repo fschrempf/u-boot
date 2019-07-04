@@ -1,0 +1,35 @@
+if TARGET_KONTRON_N8000
+
+config SYS_BOARD
+	string
+	default "imx/mx8mm"
+
+config SYS_VENDOR
+	string
+	default "kontron"
+
+config SYS_CONFIG_NAME
+	string
+	default "kontron_n8000"
+
+config KONTRON_ENV_FDT_FILE
+	string
+	default "imxceet-ul-2-s.dtb"
+
+config KONTRON_ENV_KERNEL_ADDR
+	string
+	default "0x41000000"
+
+config KONTRON_ENV_FDT_ADDR
+	string
+	default "0x43000000"
+
+config KONTRON_ENV_PXE_ADDR
+	string
+	default "0x43100000"
+
+config KONTRON_ENV_RAMDISK_ADDR
+	string
+	default "0x43200000"
+
+endif

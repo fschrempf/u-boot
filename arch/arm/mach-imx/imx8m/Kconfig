@@ -30,9 +30,16 @@ config TARGET_IMX8MM_EVK
 	select SUPPORT_SPL
 	select IMX8M_LPDDR4
 
+config TARGET_KONTRON_N8000
+	bool "Kontron Electronics N8000"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+
 endchoice
 
 source "board/freescale/imx8mq_evk/Kconfig"
 source "board/freescale/imx8mm_evk/Kconfig"
+source "board/kontron/imx/mx8mm/Kconfig"
 
 endif

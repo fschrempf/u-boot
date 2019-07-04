@@ -32,11 +32,22 @@
  * ### RAM                             ###
  * #######################################
  */
+#ifdef CONFIG_IMX8M
+#define PHYS_SDRAM			DDR_CSD1_BASE_ADDR
+#define PHYS_SDRAM_SIZE			0x80000000 /* 2GB DDR */
+#define CONFIG_SYS_SDRAM_BASE		PHYS_SDRAM
+#else
 #define PHYS_SDRAM			MMDC0_ARB_BASE_ADDR
+#endif
 
+#ifdef CONFIG_IMX8M
+#define CONFIG_SYS_INIT_RAM_ADDR	0x40000000
+#define CONFIG_SYS_INIT_RAM_SIZE	0x80000
+#else
 #define CONFIG_SYS_SDRAM_BASE		PHYS_SDRAM
 #define CONFIG_SYS_INIT_RAM_ADDR	IRAM_BASE_ADDR
 #define CONFIG_SYS_INIT_RAM_SIZE	IRAM_SIZE
+#endif
 
 #define CONFIG_SYS_INIT_SP_OFFSET \
 	(CONFIG_SYS_INIT_RAM_SIZE - GENERATED_GBL_DATA_SIZE)
@@ -83,10 +94,9 @@
 #define CONFIG_SYS_SPI_U_BOOT_OFFS	CONFIG_SYS_UBOOT_BASE
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"bootargs_base=" KONTRON_ENV_KERNEL_MTDPARTS "\0" \
+	"bootargs_base=" KONTRON_ENV_KERNEL_MTDPARTS " " \
+			 KONTRON_ENV_KERNEL_CONSOLE "\0" \
 	"script=boot.scr\0" \
-	"image=zImage\0" \
-	"console=" KONTRON_ENV_CONSOLE_DEV "\0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
 	"fdt_file=" KONTRON_ENV_FDT_FILE "\0" \
