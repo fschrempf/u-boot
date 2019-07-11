@@ -35,10 +35,6 @@
  * 0x1540000 - 0x1640000 : SPI.factory  (1MiB)
  */
 
-#ifndef CONFIG_SPL_BUILD
-#define CONFIG_SPI_FLASH_MTD
-#endif
-
 /* Below values are "dummy" - only to avoid build break */
 #define CONFIG_SYS_SPI_KERNEL_OFFS      0x150000
 #define CONFIG_SYS_SPI_ARGS_OFFS        0x140000
