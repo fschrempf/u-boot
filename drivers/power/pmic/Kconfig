@@ -10,19 +10,22 @@ config DM_PMIC
 	- 'drivers/power/pmic/pmic-uclass.c'
 	- 'include/power/pmic.h'
 
+config SPL_DM_PMIC
+	bool "Enable Driver Model for PMIC drivers (UCLASS_PMIC) in SPL"
+	depends on DM
+	---help---
+	This config enables the driver-model PMIC support in SPL.
+
 config PMIC_CHILDREN
 	bool "Allow child devices for PMICs"
 	depends on DM_PMIC
 	default y
 	---help---
-	This allows PMICs to support child devices (such as regulators) in
-	SPL. This adds quite a bit of code so if you are not using this
-	feature you can turn it off. Most likely you should turn it on for
-	U-Boot proper.
+	This allows PMICs to support child devices (such as regulators).
 
 config SPL_PMIC_CHILDREN
 	bool "Allow child devices for PMICs in SPL"
-	depends on DM_PMIC
+	depends on SPL_DM_PMIC
 	default y
 	---help---
 	This allows PMICs to support child devices (such as regulators) in
