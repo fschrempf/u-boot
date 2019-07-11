@@ -9,7 +9,6 @@
 /* SPL build */
 #ifdef CONFIG_SPL_BUILD
 #define SPL_NO_FMAN
-#define SPL_NO_DSPI
 #define SPL_NO_PCIE
 #define SPL_NO_ENV
 #define SPL_NO_MISC
@@ -160,17 +159,6 @@
 #ifndef SPL_NO_MMC
 #ifdef CONFIG_MMC
 #define CONFIG_SYS_FSL_MMC_HAS_CAPBLT_VS33
-#endif
-#endif
-
-/*  DSPI  */
-#ifndef SPL_NO_DSPI
-#define CONFIG_FSL_DSPI
-#ifdef CONFIG_FSL_DSPI
-#define CONFIG_DM_SPI_FLASH
-#define CONFIG_SPI_FLASH_STMICRO	/* cs0 */
-#define CONFIG_SPI_FLASH_SST		/* cs1 */
-#define CONFIG_SPI_FLASH_EON		/* cs2 */
 #endif
 #endif
 
