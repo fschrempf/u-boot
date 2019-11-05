@@ -97,7 +97,7 @@ struct fsl_dspi_priv {
 	struct dspi *regs;
 };
 
-#ifndef CONFIG_DM_SPI
+#if !CONFIG_IS_ENABLED(DM_SPI)
 struct fsl_dspi {
 	struct spi_slave slave;
 	struct fsl_dspi_priv priv;
@@ -411,7 +411,7 @@ static int fsl_dspi_cfg_speed(struct fsl_dspi_priv *priv, uint speed)
 
 	return 0;
 }
-#ifndef CONFIG_DM_SPI
+#if !CONFIG_IS_ENABLED(DM_SPI)
 int spi_cs_is_valid(unsigned int bus, unsigned int cs)
 {
 	if (((cs >= 0) && (cs < 8)) && ((bus >= 0) && (bus < 8)))
@@ -535,7 +535,7 @@ int spi_xfer(struct spi_slave *slave, unsigned int bitlen, const void *dout,
 	struct fsl_dspi *dspi = (struct fsl_dspi *)slave;
 	return dspi_xfer(&dspi->priv, slave->cs, bitlen, dout, din, flags);
 }
-#else
+#else /* !CONFIG_IS_ENABLED(DM_SPI) */
 static int fsl_dspi_child_pre_probe(struct udevice *dev)
 {
 	struct dm_spi_slave_platdata *slave_plat = dev_get_parent_platdata(dev);
@@ -742,4 +742,4 @@ U_BOOT_DRIVER(fsl_dspi) = {
 	.child_pre_probe = fsl_dspi_child_pre_probe,
 	.bind = fsl_dspi_bind,
 };
-#endif
+#endif /* !CONFIG_IS_ENABLED(DM_SPI) */
