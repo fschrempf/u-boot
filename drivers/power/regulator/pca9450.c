@@ -15,7 +15,9 @@
 #include <power/pmic.h>
 #include <power/regulator.h>
 
-#define HW_STATE_CONTROL 0
+#define HW_STATE_CONTROL		0
+#define PCA9450_BUCK_ENMODE_MASK	0x03
+#define PCA9450_LDO_ENMODE_MASK		0xc0
 
 /**
  * struct pca9450_vrange - describe linear range of voltages
@@ -98,7 +100,7 @@ static struct pca9450_vrange pca9450_ldo5_vranges[] = {
  * We use enable mask 'HW_STATE_CONTROL' to indicate that this regulator
  * must not be enabled or disabled by SW. The typical use-case for PCA9450
  * is powering NXP i.MX8. In this use-case we (for now) only allow control
- * for BUCK4, BUCK5, BUCK6 which are not boot critical.
+ * for BUCK4, BUCK5, BUCK6 and LDOs which are not boot critical.
  */
 static struct pca9450_plat pca9450_reg_data[] = {
 	/* Bucks 1-3 which support dynamic voltage scaling */
@@ -112,29 +114,29 @@ static struct pca9450_plat pca9450_reg_data[] = {
 		 PCA9450_BUCK3OUT_DVS0, PCA9450_DVS_BUCK_RUN_MASK,
 		 pca9450_buck123_vranges),
 	/* Bucks 4-6 which do not support dynamic voltage scaling */
-	PCA_DATA("BUCK4", PCA9450_BUCK4CTRL, HW_STATE_CONTROL,
+	PCA_DATA("BUCK4", PCA9450_BUCK4CTRL, PCA9450_BUCK_ENMODE_MASK,
 		 PCA9450_BUCK4OUT, PCA9450_DVS_BUCK_RUN_MASK,
 		 pca9450_buck456_vranges),
-	PCA_DATA("BUCK5", PCA9450_BUCK5CTRL, HW_STATE_CONTROL,
+	PCA_DATA("BUCK5", PCA9450_BUCK5CTRL, PCA9450_BUCK_ENMODE_MASK,
 		 PCA9450_BUCK5OUT, PCA9450_DVS_BUCK_RUN_MASK,
 		 pca9450_buck456_vranges),
-	PCA_DATA("BUCK6", PCA9450_BUCK6CTRL, HW_STATE_CONTROL,
+	PCA_DATA("BUCK6", PCA9450_BUCK6CTRL, PCA9450_BUCK_ENMODE_MASK,
 		 PCA9450_BUCK6OUT, PCA9450_DVS_BUCK_RUN_MASK,
 		 pca9450_buck456_vranges),
 	/* LDOs */
-	PCA_DATA("LDO1", PCA9450_LDO1CTRL, HW_STATE_CONTROL,
+	PCA_DATA("LDO1", PCA9450_LDO1CTRL, PCA9450_LDO_ENMODE_MASK,
 		 PCA9450_LDO1CTRL, PCA9450_LDO12_MASK,
 		 pca9450_ldo1_vranges),
-	PCA_DATA("LDO2", PCA9450_LDO2CTRL, HW_STATE_CONTROL,
+	PCA_DATA("LDO2", PCA9450_LDO2CTRL, PCA9450_LDO_ENMODE_MASK,
 		 PCA9450_LDO2CTRL, PCA9450_LDO12_MASK,
 		 pca9450_ldo2_vranges),
-	PCA_DATA("LDO3", PCA9450_LDO3CTRL, HW_STATE_CONTROL,
+	PCA_DATA("LDO3", PCA9450_LDO3CTRL, PCA9450_LDO_ENMODE_MASK,
 		 PCA9450_LDO3CTRL, PCA9450_LDO34_MASK,
 		 pca9450_ldo34_vranges),
-	PCA_DATA("LDO4", PCA9450_LDO4CTRL, HW_STATE_CONTROL,
+	PCA_DATA("LDO4", PCA9450_LDO4CTRL, PCA9450_LDO_ENMODE_MASK,
 		 PCA9450_LDO4CTRL, PCA9450_LDO34_MASK,
 		 pca9450_ldo34_vranges),
-	PCA_DATA("LDO5", PCA9450_LDO5CTRL_L, HW_STATE_CONTROL,
+	PCA_DATA("LDO5", PCA9450_LDO5CTRL_L, PCA9450_LDO_ENMODE_MASK,
 		 PCA9450_LDO5CTRL_H, PCA9450_LDO5_MASK,
 		 pca9450_ldo5_vranges),
 };
