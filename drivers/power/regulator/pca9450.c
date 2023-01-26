@@ -7,10 +7,13 @@
  * ROHM BD71837 regulator driver
  */
 
+#include <asm-generic/gpio.h>
 #include <common.h>
 #include <dm.h>
+#include <dm/device_compat.h>
 #include <log.h>
 #include <linux/bitops.h>
+#include <linux/err.h>
 #include <power/pca9450.h>
 #include <power/pmic.h>
 #include <power/regulator.h>
@@ -54,6 +57,10 @@ struct pca9450_plat {
 	u8			volt_mask;
 	struct pca9450_vrange	*ranges;
 	unsigned int		numranges;
+};
+
+struct pca9450_priv {
+	struct gpio_desc *sd_vsel_gpio;
 };
 
 #define PCA_RANGE(_min, _vstep, _sel_low, _sel_hi) \
@@ -214,13 +221,32 @@ static int pca9450_set_enable(struct udevice *dev, bool enable)
 			       val);
 }
 
+/*
+ * LDO5 has two different registers for voltage settings. The active one depends
+ * on the status of the SD_VSEL signal. Use the current level of the GPIO to
+ * determine the correct register.
+ */
+static u8 pca9450_get_ldo5_reg(struct udevice *dev)
+{
+	struct pca9450_priv *priv = dev_get_priv(dev);
+
+	if (dm_gpio_get_value(priv->sd_vsel_gpio) == 0)
+		return PCA9450_LDO5CTRL_L;
+
+	return PCA9450_LDO5CTRL_H;
+}
+
 static int pca9450_get_value(struct udevice *dev)
 {
 	struct pca9450_plat *plat = dev_get_plat(dev);
+	u8 volt_reg = plat->volt_reg;
 	unsigned int reg, tmp;
 	int i, ret;
 
-	ret = pmic_reg_read(dev->parent, plat->volt_reg);
+	if (!strcmp(plat->name, "LDO5"))
+		volt_reg = pca9450_get_ldo5_reg(dev);
+
+	ret = pmic_reg_read(dev->parent, volt_reg);
 	if (ret < 0)
 		return ret;
 
@@ -230,8 +256,10 @@ static int pca9450_get_value(struct udevice *dev)
 	for (i = 0; i < plat->numranges; i++) {
 		struct pca9450_vrange *r = &plat->ranges[i];
 
-		if (!vrange_find_value(r, reg, &tmp))
+		if (!vrange_find_value(r, reg, &tmp)) {
+			printf("%s:%d voltage %s: %d\n", __func__, __LINE__, plat->name, tmp);
 			return tmp;
+		}
 	}
 
 	pr_err("Unknown voltage value read from pmic\n");
@@ -242,8 +270,29 @@ static int pca9450_get_value(struct udevice *dev)
 static int pca9450_set_value(struct udevice *dev, int uvolt)
 {
 	struct pca9450_plat *plat = dev_get_plat(dev);
+	struct pca9450_priv *priv = dev_get_priv(dev);
+	u8 volt_reg = plat->volt_reg;
 	unsigned int sel;
 	int i, found = 0;
+
+	/*
+	 * LDO5 can be controlled by SD_VSEL input. Therefore we assume that if
+	 * the sd_vsel_gpio is available, we shouldn't change the voltage as
+	 * this might conflict with setting or clearing the SD_VSEL (usually by
+	 * the MMC driver through VSELECT). Instead we rely on the default
+	 * values (3.3V if SD_VSEL=LOW, 1.8V if SD_VSEL=HIGH).
+	 */
+	if (!strcmp(plat->name, "LDO5")) {
+		if (priv->sd_vsel_gpio) {
+			if (uvolt == 1800000 || uvolt == 3300000)
+				return 0;
+
+			pr_err("LD05 is controlled by SD_VSEL input, requested voltage %duV is invalid\n", uvolt);
+			return -EINVAL;
+		}
+
+		volt_reg = pca9450_get_ldo5_reg(dev);
+	}
 
 	for (i = 0; i < plat->numranges; i++) {
 		struct pca9450_vrange *r = &plat->ranges[i];
@@ -266,14 +315,14 @@ static int pca9450_set_value(struct udevice *dev, int uvolt)
 	if (!found)
 		return -EINVAL;
 
-	return pmic_clrsetbits(dev->parent, plat->volt_reg,
-			       plat->volt_mask, sel);
+	return pmic_clrsetbits(dev->parent, volt_reg, plat->volt_mask, sel);
 }
 
 static int pca9450_regulator_probe(struct udevice *dev)
 {
 	struct pca9450_plat *plat = dev_get_plat(dev);
-	int i, type;
+	struct pca9450_priv *priv = dev_get_priv(dev);
+	int i, type, ret;
 
 	type = dev_get_driver_data(dev_get_parent(dev));
 
@@ -290,6 +339,17 @@ static int pca9450_regulator_probe(struct udevice *dev)
 		if (type == NXP_CHIP_TYPE_PCA9450BC &&
 		    !strcmp(pca9450_reg_data[i].name, "BUCK3")) {
 			continue;
+		}
+
+		if (CONFIG_IS_ENABLED(DM_GPIO) &&
+		    !strcmp(pca9450_reg_data[i].name, "LDO5")) {
+			priv->sd_vsel_gpio = devm_gpiod_get_optional(dev,
+				"sd-vsel", GPIOD_IS_IN);
+			if (IS_ERR(priv->sd_vsel_gpio)) {
+				ret = PTR_ERR(priv->sd_vsel_gpio);
+				dev_err(dev, "Failed to request SD_VSEL GPIO: %d\n", ret);
+				return ret;
+			}
 		}
 
 		*plat = pca9450_reg_data[i];
@@ -315,4 +375,5 @@ U_BOOT_DRIVER(pca9450_regulator) = {
 	.ops		= &pca9450_regulator_ops,
 	.probe		= pca9450_regulator_probe,
 	.plat_auto	= sizeof(struct pca9450_plat),
+	.priv_auto	= sizeof(struct pca9450_priv),
 };
