@@ -452,7 +452,6 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_pmic>;
 		reg = <0x25>;
-		sd-vsel-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
 
 		/*
 		 * The bootloader is expected to switch on LDO4 for the on-module +V3.3_ADC and the
@@ -540,6 +539,7 @@
 				regulator-max-microvolt = <3300000>;
 				regulator-min-microvolt = <1800000>;
 				regulator-name = "On-module +V3.3_1.8_SD (LDO5)";
+				sd-vsel-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
 			};
 		};
 	};
@@ -1282,7 +1282,7 @@
 
 	pinctrl_usdhc2: usdhc2grp {
 		fsl,pins =
-			<MX8MP_IOMUXC_GPIO1_IO04__USDHC2_VSELECT	0x4>,	/* PMIC_USDHC_VSELECT */
+			<MX8MP_IOMUXC_GPIO1_IO04__USDHC2_VSELECT	0x40000004>,	/* PMIC_USDHC_VSELECT */
 			<MX8MP_IOMUXC_SD2_CLK__USDHC2_CLK		0x190>,	/* SODIMM 78 */
 			<MX8MP_IOMUXC_SD2_CMD__USDHC2_CMD		0x1d0>,	/* SODIMM 74 */
 			<MX8MP_IOMUXC_SD2_DATA0__USDHC2_DATA0		0x1d0>,	/* SODIMM 80 */
@@ -1293,7 +1293,7 @@
 
 	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
 		fsl,pins =
-			<MX8MP_IOMUXC_GPIO1_IO04__USDHC2_VSELECT	0x4>,
+			<MX8MP_IOMUXC_GPIO1_IO04__USDHC2_VSELECT	0x40000004>,
 			<MX8MP_IOMUXC_SD2_CLK__USDHC2_CLK		0x194>,
 			<MX8MP_IOMUXC_SD2_CMD__USDHC2_CMD		0x1d4>,
 			<MX8MP_IOMUXC_SD2_DATA0__USDHC2_DATA0		0x1d4>,
@@ -1304,7 +1304,7 @@
 
 	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
 		fsl,pins =
-			<MX8MP_IOMUXC_GPIO1_IO04__USDHC2_VSELECT	0x4>,
+			<MX8MP_IOMUXC_GPIO1_IO04__USDHC2_VSELECT	0x40000004>,
 			<MX8MP_IOMUXC_SD2_CLK__USDHC2_CLK		0x196>,
 			<MX8MP_IOMUXC_SD2_CMD__USDHC2_CMD		0x1d6>,
 			<MX8MP_IOMUXC_SD2_DATA0__USDHC2_DATA0		0x1d6>,
