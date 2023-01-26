@@ -16,7 +16,6 @@
 #include <power/regulator.h>
 
 #define HW_STATE_CONTROL 0
-#define DEBUG
 
 /**
  * struct pca9450_vrange - describe linear range of voltages
